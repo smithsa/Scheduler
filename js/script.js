@@ -41,12 +41,14 @@ $( document ).ready(function() {
     $(".next.btn").click(function(){
          $(".error").hide();
          var current_step = $(".step.active").attr("data-step");
+         if(current_step == 1){
+             $(".prev.btn").show();
+         }
          if(current_step == 2){
             if(!$("input[name='location']:checked").val()){
               $(".error.locations").show();
               return false;
             }
-            $(".prev.btn").show();
          }
          if(current_step == 3){
            if(!$("input[name='date']:checked").val()){
@@ -66,7 +68,7 @@ $( document ).ready(function() {
     $(".prev.btn").click(function(){
       var current_step = $(".step.active").attr("data-step");
       $('#scheduler-form').easyWizard('prevStep');
-       if(current_step == 3){
+       if(current_step == 2){
           $(".prev.btn").hide();
        }
        if(current_step == 4){
@@ -77,14 +79,21 @@ $( document ).ready(function() {
 
     $(".submit.btn").click(function(){
         $(".error").hide();
+        var is_valid = true;
         if(!$("input[name='full-name']").val()){
           $(".error.full-name").show();
+            is_valid = false;
         }
         if(!$("input[name='email']").val() || !validateEmail($("input[name='email']").val())){
           $(".error.email").show();
+            is_valid = false;
         }
         if(!$("input[name='phone']").val() || $("input[name='phone']").val().length != 14){
           $(".error.phone").show();
+            is_valid =  false;
+        }
+        if(!is_valid){
+            return false;
         }
 
         submitForm();
@@ -107,7 +116,7 @@ $( document ).ready(function() {
             var start_date = new Date();
             start_date = addBusinessDays(start_date, buffer_start_days);
 
-            appointment_days_of_week = [];
+            var appointment_days_of_week = [];
             for(var key in data){
               appointment_days_of_week.push(day_of_week_codes[key]);
             }
@@ -122,8 +131,8 @@ $( document ).ready(function() {
 
             for (var i = 0; i < appointment_dates.length; i++){
               var day_id = appointment_dates[i].getDay();
-              var input_id = "date-"+day_id;
               var numeric_date = Number(appointment_dates[i]);
+              var input_id = "date-"+numeric_date;
               var list_date = appointment_dates[i].toLocaleTimeString("en-us", date_options).split(",");
               var input_label = list_date[0] + ', ' + list_date[1] + ', ' + list_date[2];
               var input_element   = $('<input>').attr({ type: 'radio', id: input_id, name: 'date', value:day_id})[0];
@@ -138,7 +147,7 @@ $( document ).ready(function() {
     $("#dates").on("click", "input[name='date']", function(){
       $("#times").empty();
       var day_code = parseInt($(this).val());
-      var day_of_week = days_of_week[day_code]
+      var day_of_week = days_of_week[day_code];
       $.getJSON( "json/location.json", function( data ) {
             var location_id = $("input[name=location]:checked").val();
             data = data['locations'][location_id]['appointment_slots'];
@@ -150,7 +159,7 @@ $( document ).ready(function() {
               var start_standard_time = militaryToStandard(start_military_time);
               var end_standard_time = militaryToStandard(end_military_time);
               var time_range = start_standard_time + ' - ' + end_standard_time;
-              var input_id = 'time-'+start_military_time;
+              var input_id = 'time-' + start_military_time + '-' + end_military_time;
               var input_element   = $('<input>').attr({ type: 'radio', id:input_id  , name: 'time', value:time_range})[0];
               var label_element   = $('<label>').attr({ for: input_id}).text(time_range)[0];
               var div_element     = $('<div>').attr({ class: 'date'}).append(input_element, label_element);
@@ -219,20 +228,43 @@ function addBusinessDays(date, days){
     }
   }
 }
+function findPointOfContact(location_id, day_of_week, appointment_start_time, appointment_end_time){
+
+}
 
 function submitForm(){
-    var location = $("input[name='location']:checked").text();
-    var date = $("input[name='date']:checked").text();
-    var time = $("input[name='time']").val();
-    var full_name = $("input[name='full-name']").val();
-    var email = $("input[name='email']").val();
-    var phone = $("input[name='phone']").val();
+    var location_id = $("input[name='location']:checked").attr("id");
+    var location = $('label[for='+location_id+']').text();
+    var date_id = $("input[name='date']:checked").attr("id");
+    var date = $('label[for='+date_id+']').text();
+    var selected_time_element = $("input[name='time']:checked");
+    var time = selected_time_element.val();
+    var consumer_full_name = $("input[name='full-name']").val();
+    var consumer_email = $("input[name='email']").val();
+    var consumer_phone = $("input[name='phone']").val();
+    //to get the point of contact:
+    // 1. location id is needed = location_id;
+    var location_identifer = $("input[name='location']:checked").val();
+    // 2. day of week
+    var date_day_of_week = $("input[name='date']:checked").val();
+    // 3. time slot
+    //start_time and end_time
+    var selected_time_element_id_list = selected_time_element.attr("id").split('-');
+    var appointment_start_time = selected_time_element_id_list[1];
+    var appointment_end_time = selected_time_element_id_list[2];
+
+    var point_of_contact = "";
+
     console.log(location);
     console.log(date);
     console.log(time);
-    console.log(full_name);
-    console.log(email);
-    console.log(phone);
+    console.log(consumer_full_name);
+    console.log(consumer_email);
+    console.log(consumer_phone);
+    console.log('location id:', location_identifer);
+    console.log('day of week id:', date_day_of_week);
+    console.log('start time:', appointment_start_time);
+    console.log('end time:', appointment_end_time);
 }
 
 
@@ -297,25 +329,3 @@ function sendMail(){
     }
   });
 }
-
-$.fn.serializeObject = function () {
-    "use strict";
-    var result = {};
-    var extend = function (i, element) {
-      var node = result[element.name];
-      // If node with same name exists already, need to convert it to an array as it
-      // is a multi-value field (i.e., checkboxes)
-      if ('undefined' !== typeof node && node !== null) {
-        if ($.isArray(node)) {
-          node.push(element.value);
-        } else {
-          result[element.name] = [node, element.value];
-        }
-      } else {
-        result[element.name] = element.value;
-      }
-    };
-
-    $.each(this.serializeArray(), extend);
-    return result;
-  }
