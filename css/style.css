@@ -1,0 +1,12 @@
+.req{
+	color:red;
+}
+.next, .submit{
+	float:right;
+}
+.step{
+	height:300px;
+}
+.error{
+	color:red;
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8 />
+	<title></title>
+	<link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
+	<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="js/jquery.maskedinput.min.js"></script>
+	<script src="js/jquery.easyWizard.js"></script>
+	<script type="text/javascript" src="js/script.js"></script>
+	<!--[if IE]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+<body>
+<div class="container">
+	<form id="scheduler-form">
+		<div class="step">
+
+		</div>	
+		<div class="step">
+			<label class="control-label">Location <span class="req">*</span></label>
+			<div class="error locations" style="display:none">Please select a location. This field is required.</div>
+			<div id="locations"></div>
+		</div>
+		<div class="step">
+			<label class="control-label">Date <span class="req">*</span></label> 
+			<div class="error dates" style="display:none">Please select a date. This field is required.</div>
+			<div id="dates"></div>
+			<label class="control-label">Time <span class="req">*</span></label>
+			<div class="error times" style="display:none">Please select a time. This field is required.</div>
+			<div id="times"></div>
+		</div>
+		<div class="step">
+			<div id="consumer-contact-information">
+				<!-- Full name -->
+				<div class="form-group">
+				  <label class="control-label">Full Name <span class="req">*</span></label>  
+				  <div class="error full-name" style="display:none">Please enter your name. This field is required.</div>
+					  <div class="input-group">
+					  		<input  name="full-name" placeholder="Your Full Name" class="form-control"  type="text" required>
+					   </div>
+				</div>
+				
+				<!-- Email -->
+				<div class="form-group">
+				  <label class="control-label">Email <span class="req">*</span></label>  
+				  <div class="error email" style="display:none">Please enter a valid email. This field is required.</div>
+					  <div class="input-group">
+					  		<input  name="email" placeholder="Your Email" class="form-control"  type="email" required>
+					   </div>
+				</div>
+				
+				<!-- Phone Number -->
+				<div class="form-group">
+				  <label class="control-label">Phone Number <span class="req">*</span></label>  
+				  <div class="error phone" style="display:none">Please enter a valid phone number. This field is required.</div>
+					  <div class="input-group">
+					  		<input  name="phone" placeholder="Your Phone Number" class="form-control"  type="tel" required>
+					  </div>
+				</div>
+			</div>	
+		</div>
+	</form>
+	<div class="wizard-buttons">
+		<button class="prev btn" style="display:none">Previous</button>
+		<button class="next btn">Next</button>
+		<button type="submit" class="submit btn btn-info" style="display: none;">Submit</button>
+	</div>	
+</div>
+</body>
+</html>
