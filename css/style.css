@@ -1,12 +1,152 @@
+body{
+	font-family: 'Droid Serif', serif;
+	background: black;
+}
+.step{
+	width:100%;
+	max-width:1170px;
+	background: white;
+}
+.step-1 .container{
+	padding-top:70px;
+}
+.step-1{
+	background: #20A4DD;
+}
+.step-1 p{
+	font-size:21px;
+	font-weight:300;
+}
+.step-1 h1{
+	font-weight:bold;
+	font-size:38px;
+}
+.step-1 h1, .step-1 p{
+	color: #ffffff;
+}
+.location-title{
+	color: #20A4DD;
+	margin-top:20px;
+}
+.step-2 button{
+	margin-top:15px;
+}
+.step-2 .container, .step-3 .container{
+	padding-top:15px;
+}
+#locations{
+	margin-top:15px;
+}
 .req{
 	color:red;
 }
-.next, .submit{
-	float:right;
-}
 .step{
-	height:300px;
+	height:355px;
 }
 .error{
-	color:red;
+	color:#ffffff;
+	background:#CE453C;
+	padding:7px 18px;
+	text-align: center;
+	font-size:12px;
+	border:none;
+	border-radius:4px;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+.error.zipcode{
+	margin-top:-10px;
+}
+.btn{
+	color:#ffffff;
+	background: #FBB03F;
+	outline:0;
+	padding-left:20px;
+	padding-right:20px;
+}
+
+.btn.focus,
+.btn:focus,
+.btn:hover{
+	color:#ffffff;
+	background: #FBB03F;
+	outline: 0;
+}
+.btn.get-started{
+	margin-top:10px;
+	width:200px;
+}
+input[name="zipcode"]{
+	width:200px;
+}
+.zipcode-right{
+	margin-top:50px;
+}
+.zipcode-left{
+
+}
+.step-1 .step-row{
+	width: 60%;
+	margin-left:auto;
+	margin-right:auto;
+}
+.step-2 .step-row{
+	width: 75%;
+	margin-left:auto;
+	margin-right:auto;
+}
+.step-3 .step-row{
+	width: 75%;
+	margin-left:auto;
+	margin-right:auto;
+}
+.form-control{
+	color:#888888;
+}
+.btn.next{
+	float:right;
+}
+.location{
+	width:50%;
+	float:left;
+}
+.location .address{
+	font-weight: normal;
+}
+.location label{
+	margin: 0px 0px 0px 15px;
+	padding-bottom: 15px;
+	font-size: 14px;
+}
+.location input[type=radio]{
+	margin-top: 10px;
+}
+.selected-location{
+	font-size:13px;
+}
+#dates{
+	width:50%;
+}
+#times{
+	width:50%;
+}
+#dates input[type=radio]{
+	display: none;
+}
+#dates input[type=radio] + label, input[type=checkbox] + label {
+	display: inline-block;
+	background-color: #CCCCCC;
+	border-color: gray;
+	color: #4d4d4d;
+	border-radius: .5em;
+	padding: .5em 1em;
+	text-align: center;
+	/*background-color: #F5F1DA;*/
+	/*border-color: #d4c362;*/
+	/*color: #a4922c;*/
+}
+.date label{
+	font-size:12px;
+	width:50%;
+	float: left;
 }

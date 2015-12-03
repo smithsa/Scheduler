@@ -3,9 +3,15 @@
 <head>
 	<meta charset=utf-8 />
 	<title></title>
-	<link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
 	<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+	<!-- Bootstrap CDN Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<!-- Bootstrap CDN Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+	<!-- Bootstrap CDN Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
+	<link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
 	<script type="text/javascript" src="js/jquery.maskedinput.min.js"></script>
 	<script src="js/jquery.easyWizard.js"></script>
 	<script type="text/javascript" src="js/script.js"></script>
@@ -14,60 +20,108 @@
 	<![endif]-->
 </head>
 <body>
-<div class="container">
-	<form id="scheduler-form">
-		<div class="step">
+<form id="scheduler-form">
+	<div class="step step-1">
+		<div class="container">
+			<div class="row step-row">
+				<div class="error zipcode" style="display:none">Please enter a valid zip code. This field is required.</div>
+				<div class="col-sm-8">
+					<div class="zipcode-left">
+						<h1>Find help near you.</h1>
+						<p>Need help with your health insurance application? Schedule an appointment with a certified Navigator today.</p>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="zipcode-right">
+						<input type="text" name="zipcode" maxlength="5" placeholder="Enter Your Zip Code" class="form-control">
+						<button class="next btn get-started" type="button">Get Started</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="step step-2">
+		<div class="container">
+			<div class="row step-row">
+				<h3 class="location-title"></h3>
+				<div class="error locations" style="display:none">Please select a location. This field is required.</div>
+				<div id="locations"></div>
+				<button class="next btn" type="button">Next</button>
+			</div>
+		</div>
+	</div>
+	<div class="step step-3">
+		<div class="container">
+			<div class="row step-row">
+				<h3 class="location-title"></h3>
+				<p class="selected-location"></p>
+				<div class="error dates" style="display:none">Please select a date. This field is required.</div>
+				<div id="dates"></div>
+				<label class="control-label">Time <span class="req">*</span></label>
+				<div class="error times" style="display:none">Please select a time. This field is required.</div>
+				<div id="times"></div>
+			</div>
+		</div>
+	</div>
+	<div class="step step-4">
+		<div class="container">
+			<div class="row step-row">
+				<div id="consumer-contact-information">
+					<!-- Full name -->
+					<div class="form-group">
+					  <label class="control-label">Full Name <span class="req">*</span></label>
+					  <div class="error full-name" style="display:none">Please enter your name. This field is required.</div>
+						  <div class="input-group">
+								<input  name="full-name" placeholder="Your Full Name" class="form-control"  type="text">
+						   </div>
+					</div>
 
-		</div>	
-		<div class="step">
-			<label class="control-label">Location <span class="req">*</span></label>
-			<div class="error locations" style="display:none">Please select a location. This field is required.</div>
-			<div id="locations"></div>
-		</div>
-		<div class="step">
-			<label class="control-label">Date <span class="req">*</span></label> 
-			<div class="error dates" style="display:none">Please select a date. This field is required.</div>
-			<div id="dates"></div>
-			<label class="control-label">Time <span class="req">*</span></label>
-			<div class="error times" style="display:none">Please select a time. This field is required.</div>
-			<div id="times"></div>
-		</div>
-		<div class="step">
-			<div id="consumer-contact-information">
-				<!-- Full name -->
-				<div class="form-group">
-				  <label class="control-label">Full Name <span class="req">*</span></label>  
-				  <div class="error full-name" style="display:none">Please enter your name. This field is required.</div>
-					  <div class="input-group">
-					  		<input  name="full-name" placeholder="Your Full Name" class="form-control"  type="text" required>
-					   </div>
+					<!-- Email -->
+					<div class="form-group">
+					  <label class="control-label">Email <span class="req">*</span></label>
+					  <div class="error email" style="display:none">Please enter a valid email. This field is required.</div>
+						  <div class="input-group">
+								<input  name="email" placeholder="Your Email" class="form-control"  type="email">
+						   </div>
+					</div>
+
+					<!-- Phone Number -->
+					<div class="form-group">
+					  <label class="control-label">Phone Number <span class="req">*</span></label>
+					  <div class="error phone" style="display:none">Please enter a valid phone number. This field is required.</div>
+						  <div class="input-group">
+								<input  name="phone" placeholder="Your Phone Number" class="form-control"  type="tel">
+						  </div>
+					</div>
+
+					<!-- Preferred Language -->
+					<div class="form-group">
+						<label class="control-label">Phone Number <span class="req">*</span></label>
+						<div class="error phone" style="display:none">Please enter a valid phone number. This field is required.</div>
+						<div class="input-group">
+							<input  name="phone" placeholder="Your Phone Number" class="form-control"  type="tel">
+						</div>
+					</div>
+
+					<!-- Best Time To Contact -->
+					<div class="form-group">
+						<label class="control-label">Phone Number <span class="req">*</span></label>
+						<div class="error phone" style="display:none">Please enter a valid phone number. This field is required.</div>
+						<div class="input-group">
+							<input  name="phone" placeholder="Your Phone Number" class="form-control"  type="tel" >
+						</div>
+					</div>
+
 				</div>
-				
-				<!-- Email -->
-				<div class="form-group">
-				  <label class="control-label">Email <span class="req">*</span></label>  
-				  <div class="error email" style="display:none">Please enter a valid email. This field is required.</div>
-					  <div class="input-group">
-					  		<input  name="email" placeholder="Your Email" class="form-control"  type="email" required>
-					   </div>
-				</div>
-				
-				<!-- Phone Number -->
-				<div class="form-group">
-				  <label class="control-label">Phone Number <span class="req">*</span></label>  
-				  <div class="error phone" style="display:none">Please enter a valid phone number. This field is required.</div>
-					  <div class="input-group">
-					  		<input  name="phone" placeholder="Your Phone Number" class="form-control"  type="tel" required>
-					  </div>
-				</div>
-			</div>	
+			</div>
 		</div>
-	</form>
-	<div class="wizard-buttons">
-		<button class="prev btn" style="display:none">Previous</button>
-		<button class="next btn">Next</button>
-		<button type="submit" class="submit btn btn-info" style="display: none;">Submit</button>
-	</div>	
+	</div>
+</form>
+<div class="wizard-buttons">
+	<button class="prev btn" style="display:none">Previous</button>
+	<button class="next btn">Next</button>
+	<button type="submit" class="submit btn btn-info" style="display: none;">Submit</button>
 </div>
+
 </body>
 </html>

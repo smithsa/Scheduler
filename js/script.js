@@ -1,3 +1,5 @@
+//notes
+// narrow down the closest 6 locations and display those
 
 var config = {}
 
@@ -14,25 +16,6 @@ var day_of_week_codes = {
 
 var days_of_week = Object.keys(day_of_week_codes);
 
-
-//initial load of the locations
-$.getJSON( "json/location.json", function( data ) {
-    data = data['locations'];
-    for(var key in data){
-      var location_id     = data[key]['id'];
-      var location_name   = data[key]['name'];
-      var location_street = data[key]['street_address'];
-      var location_city   = data[key]['city'];
-      var location_state  = data[key]['state'];
-      var input_id        = 'location-'+location_id;
-      var input_label     = location_name + location_street + location_city + location_state;
-      var input_element   = $('<input>').attr({ type: 'radio', id: input_id, name: 'location', value:location_id})[0];
-      var label_element   = $('<label>').attr({ for: input_id}).text(input_label)[0];
-      var div_element     = $('<div>').attr({ class: 'location'}).append(input_element, label_element);
-      $("#locations").append(div_element);
-    }
-});
-
 //event handlers
 $( document ).ready(function() {
     $("#scheduler-form").easyWizard({showSteps: false, showButtons:false});
@@ -41,14 +24,26 @@ $( document ).ready(function() {
     $(".next.btn").click(function(){
          $(".error").hide();
          var current_step = $(".step.active").attr("data-step");
+         var next_step =  parseInt(current_step) + 1;
          if(current_step == 1){
+             var zipcode = $("input[name='zipcode']").val();
+             if(!isZipcodeValid(zipcode)){
+                 $(".error.zipcode").show();
+                 return false;
+             }
+             $(".location-title").text("Available Near "+zipcode);
+             populateNearestLocations(zipcode);
              $(".prev.btn").show();
+
          }
          if(current_step == 2){
             if(!$("input[name='location']:checked").val()){
               $(".error.locations").show();
               return false;
             }
+            var location_id = $("input[name='location']:checked").attr("id");
+            var location = $('label[for='+location_id+']').html();
+            $(".selected-location").text(location.replace('<br><span class="address">', '-').replace('</span>', '').replace("&amp;", '&'));
          }
          if(current_step == 3){
            if(!$("input[name='date']:checked").val()){
@@ -62,12 +57,18 @@ $( document ).ready(function() {
             $(".submit.btn").show();
             $(".next.btn").hide();
          }
+
+
          $('#scheduler-form').easyWizard('nextStep');
+
+
     });
 
     $(".prev.btn").click(function(){
       var current_step = $(".step.active").attr("data-step");
+      var prev_step =  parseInt(current_step) - 1;
       $('#scheduler-form').easyWizard('prevStep');
+
        if(current_step == 2){
           $(".prev.btn").hide();
        }
@@ -84,7 +85,7 @@ $( document ).ready(function() {
           $(".error.full-name").show();
             is_valid = false;
         }
-        if(!$("input[name='email']").val() || !validateEmail($("input[name='email']").val())){
+        if(!$("input[name='email']").val() || !isEmailValidate($("input[name='email']").val())){
           $(".error.email").show();
             is_valid = false;
         }
@@ -125,7 +126,7 @@ $( document ).ready(function() {
             var date_options = {
                 weekday: "long", 
                 year: "numeric", 
-                month: "long",
+                month: "short",
                 day: "numeric",
             }
 
@@ -134,10 +135,10 @@ $( document ).ready(function() {
               var numeric_date = Number(appointment_dates[i]);
               var input_id = "date-"+numeric_date;
               var list_date = appointment_dates[i].toLocaleTimeString("en-us", date_options).split(",");
-              var input_label = list_date[0] + ', ' + list_date[1] + ', ' + list_date[2];
-              var input_element   = $('<input>').attr({ type: 'radio', id: input_id, name: 'date', value:day_id})[0];
-              var label_element   = $('<label>').attr({ for: input_id}).text(input_label)[0];
-              var div_element     = $('<div>').attr({ class: 'date'}).append(input_element, label_element);
+              var input_label = list_date[0] + ", " + list_date[1] + ", " + list_date[2];
+              var input_element   = $("<input>").attr({ type: "radio", id: input_id, name: "date", value:day_id})[0];
+              var label_element   = $("<label>").attr({ for: input_id}).text(input_label)[0];
+              var div_element     = $("<div>").attr({ class: "date"}).append(input_element, label_element);
               $("#dates").append(div_element);
             }
          });
@@ -162,13 +163,48 @@ $( document ).ready(function() {
               var input_id = 'time-' + start_military_time + '-' + end_military_time;
               var input_element   = $('<input>').attr({ type: 'radio', id:input_id  , name: 'time', value:time_range})[0];
               var label_element   = $('<label>').attr({ for: input_id}).text(time_range)[0];
-              var div_element     = $('<div>').attr({ class: 'date'}).append(input_element, label_element);
+              var div_element     = $('<div>').attr({ class: 'time'}).append(input_element, label_element);
               $("#times").append(div_element);
             }
       });
     });
 
 });
+
+function populateNearestLocations(zipcode){
+    $("#locations").empty();
+
+    //initial load of the locations
+    $.getJSON( "json/location.json", function( data ) {
+        var data = data["locations"];
+        var nearest_locations = [];
+        for(var key in data){
+            var distance = Math.abs(zipcode - parseInt(data[key]['zip_code']));
+            nearest_locations.push([distance, data[key]]);
+        }
+        //sorting the locations to find the nearest
+        nearest_locations.sort(sortMultiDimensionalArray);
+        if(nearest_locations.length > 6){
+            nearest_locations = nearest_locations.splice(0,6);
+        }
+
+        //populating locations
+        for(var key in nearest_locations){
+            var location_id     = nearest_locations[key][1]['id'];
+            var location_name   = nearest_locations[key][1]['name'];
+            var location_street = nearest_locations[key][1]['street_address'];
+            var location_city   = nearest_locations[key][1]['city'];
+            var location_state  = nearest_locations[key][1]['state'];
+            var location_zipcode  = nearest_locations[key][1]['zip_code'];
+            var input_id        = 'location-'+location_id;
+            var input_label     = location_name + '<br/><span class="address"> ' + location_street + ', ' + location_city + ', ' + location_state + ' ' + location_zipcode + '</span>';
+            var input_element   = $('<input>').attr({ type: 'radio', id: input_id, name: 'location', value:location_id})[0];
+            var label_element   = $('<label>').attr({ for: input_id}).html(input_label)[0];
+            var div_element     = $('<div>').attr({ class: 'location'}).append(input_element, label_element);
+            $("#locations").append(div_element);
+        }
+    });
+}
 
 //get times slots, currently works well for increments of 1, haven't tested for more hour increments
 function getTimeSlots(time_slots, hour_increment){
@@ -228,9 +264,6 @@ function addBusinessDays(date, days){
     }
   }
 }
-function findPointOfContact(location_id, day_of_week, appointment_start_time, appointment_end_time){
-
-}
 
 function submitForm(){
     var location_id = $("input[name='location']:checked").attr("id");
@@ -244,7 +277,7 @@ function submitForm(){
     var consumer_phone = $("input[name='phone']").val();
     //to get the point of contact:
     // 1. location id is needed = location_id;
-    var location_identifer = $("input[name='location']:checked").val();
+    var location_data_id = $("input[name='location']:checked").val();
     // 2. day of week
     var date_day_of_week = $("input[name='date']:checked").val();
     // 3. time slot
@@ -253,26 +286,55 @@ function submitForm(){
     var appointment_start_time = selected_time_element_id_list[1];
     var appointment_end_time = selected_time_element_id_list[2];
 
-    var point_of_contact = "";
-
     console.log(location);
     console.log(date);
     console.log(time);
     console.log(consumer_full_name);
     console.log(consumer_email);
     console.log(consumer_phone);
-    console.log('location id:', location_identifer);
+    console.log('location id:', location_data_id);
     console.log('day of week id:', date_day_of_week);
     console.log('start time:', appointment_start_time);
     console.log('end time:', appointment_end_time);
+
+    //getting the point of contact's email. will send email here.
+    $.getJSON( "json/location.json", function( data ) {
+        //getting the point of contact
+        var time_slots = data["locations"][location_data_id]["appointment_slots"][days_of_week[date_day_of_week]]["time_slots"];
+        var points_of_contacts = [];
+        for(var i = 0; i < time_slots.length; i++){
+            if(appointment_start_time >= time_slots[i]["start_time"] && appointment_end_time <= time_slots[i]["end_time"]){
+                var current_point_of_contacts = time_slots[i]["point_of_contact"];
+                points_of_contacts = points_of_contacts.concat(current_point_of_contacts);
+            }
+        }
+
+        //choosing a contact randomly if more than one contact is currently at that location
+        var point_of_contact_id = points_of_contacts[0];
+        if(points_of_contacts.length > 1){
+            point_of_contact_id = points_of_contacts[Math.floor(Math.random() * points_of_contacts.length)];
+        }
+
+        $.getJSON( "json/point_of_contact.json", function( data ) {
+                var point_of_contact = data["point_of_contacts"][point_of_contact_id];
+                console.log("poc:", point_of_contact["email"]);
+        });
+
+    });
 }
 
+function isZipcodeValid(value){
+    if (/(^\d{5}$)|(^\d{5}-\d{4}$)/.test(value)){
+        return true;
+    }
+    return false;
+}
 
-function validateEmail(value){
+function isEmailValidate(value){
  if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)){
     return true;
   }
-    return false;
+  return false;
 }
 
 function militaryToStandard(value) {
@@ -306,7 +368,14 @@ function militaryToStandard(value) {
         return value;
       }
 }
-
+function sortMultiDimensionalArray(a, b) {
+    if (a[0] === b[0]) {
+        return 0;
+    }
+    else {
+        return (a[0] < b[0]) ? -1 : 1;
+    }
+}
 //function to send email
 function sendMail(){
   $.ajax({
