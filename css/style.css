@@ -6,9 +6,10 @@ body{
 	width:100%;
 	max-width:1170px;
 	background: white;
+	height:420px;
 }
 .step-1 .container{
-	padding-top:70px;
+	padding-top:118px;
 }
 .step-1{
 	background: #20A4DD;
@@ -19,7 +20,7 @@ body{
 }
 .step-1 h1{
 	font-weight:bold;
-	font-size:38px;
+	font-size:32px;
 }
 .step-1 h1, .step-1 p{
 	color: #ffffff;
@@ -32,16 +33,16 @@ body{
 	margin-top:15px;
 }
 .step-2 .container, .step-3 .container{
-	padding-top:15px;
+	padding-top:50px;
+}
+.step-4 .container{
+	padding-top:10px;
 }
 #locations{
 	margin-top:15px;
 }
 .req{
 	color:red;
-}
-.step{
-	height:355px;
 }
 .error{
 	color:#ffffff;
@@ -53,6 +54,7 @@ body{
 	border-radius:4px;
 	margin-top:10px;
 	margin-bottom:10px;
+	height:31px;
 }
 .error.zipcode{
 	margin-top:-10px;
@@ -86,7 +88,7 @@ input[name="zipcode"]{
 
 }
 .step-1 .step-row{
-	width: 60%;
+	width: 655px;
 	margin-left:auto;
 	margin-right:auto;
 }
@@ -100,10 +102,19 @@ input[name="zipcode"]{
 	margin-left:auto;
 	margin-right:auto;
 }
+.step-4 .step-row{
+	width: 80%;
+	margin-left:auto;
+	margin-right:auto;
+}
+
 .form-control{
 	color:#888888;
 }
-.btn.next{
+.btn.next:not(.get-started){
+	float:right;
+}
+.btn.prev{
 	float:right;
 }
 .location{
@@ -122,31 +133,269 @@ input[name="zipcode"]{
 	margin-top: 10px;
 }
 .selected-location{
-	font-size:13px;
+	font-size:12px;
+	color: #888;
 }
 #dates{
-	width:50%;
+	width:380px;
+	float: left;
 }
 #times{
-	width:50%;
+	width:380px;
+	min-height:136px;
+	float: right;
 }
-#dates input[type=radio]{
+.dates-container, .times-container{
+	width:50%;
+	float:left;
+}
+#dates input[type=radio], #times input[type=radio]{
 	display: none;
 }
-#dates input[type=radio] + label, input[type=checkbox] + label {
+#dates input[type=radio] + label, #times input[type=radio] + label{
 	display: inline-block;
-	background-color: #CCCCCC;
-	border-color: gray;
-	color: #4d4d4d;
+	background-color: #eeeeee;
+	color: #888;
 	border-radius: .5em;
-	padding: .5em 1em;
+	padding: .5em 0em;
 	text-align: center;
-	/*background-color: #F5F1DA;*/
-	/*border-color: #d4c362;*/
-	/*color: #a4922c;*/
+}
+#dates .date:nth-child(even) input[type=radio] + label, .time:nth-child(even) input[type=radio] + label{
+	margin-left:20px;
+}
+#dates input[type=radio]:checked + label, #times input[type=radio]:checked + label{
+	background-color: #20A4DD;
+	color: #ffffff;
 }
 .date label{
 	font-size:12px;
-	width:50%;
+	width:180px;
 	float: left;
+}
+.time label{
+	font-size:12px;
+	width:180px;
+	float: left;
+}
+.appointment-label label{
+	color: #20A4DD;
+	font-weight: 100;
+}
+.appointment-label{
+	width:100%;
+	text-align: center;
+	float:left;
+	margin-bottom:10px;
+}
+.step-3 .nav-buttons{
+	margin-top:10px;
+}
+.step-4 input, .step-4 select{
+	width:100%;
+}
+.step-4 .input-group{
+	width:97%;
+}
+.step-4 input.last-name{
+	float:left;
+}
+.step-4 .form-group{
+	width:50%;
+	float:left;
+}
+.step-4.error{
+	margin-bottom: 25px;
+}
+.step-4.selected-location{
+	margin-bottom:15px;
+}
+.submit.btn{
+	border-color:transparent;
+	float:right;
+	text-decoration: none;
+}
+.right .form-group:nth-child(odd) .input-group{
+	float:right
+}
+.left .form-group:nth-child(even) .input-group{
+	float:right
+}
+.location label,  .location input[type="radio"], .date label, .time label{
+	cursor:pointer;
+}
+.prev.btn{
+	background: #ccc;
+	float: left;
+}
+
+/*==========  Non-Mobile First Method  ==========*/
+
+/* Large Devices, Wide Screens */
+@media only screen and (max-width : 1200px){
+	#dates .date:nth-child(even) input[type=radio] + label, .time:nth-child(even) input[type=radio] + label {
+		margin-left: 10px;
+	}
+	.date label {
+		font-size: 12px;
+		width: 165px;
+		float: left;
+	}
+	.time label {
+		font-size: 12px;
+		width: 145px;
+		float: left;
+	}
+	#times{
+		width:300px;
+	}
+	#dates {
+		width: 352px;
+	}
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (max-width : 992px){
+	.step-2 .step-row{
+		width:100%;
+	}
+	.step-3 .step-row{
+		width:100%;
+	}
+}
+
+/* Small Devices, Tablets */
+@media only screen and (max-width : 768px){
+	.location label, .location .address{
+		font-size: 12px;
+	}
+	.dates-container, .times-container{
+		width:100%;
+		float:none !important;
+	}
+	#dates, #times{
+		margin-left:auto;
+		margin-right:auto;
+		width:340px;
+		float:none !important;
+	}
+	.date label, .time label{
+		width: 160px;
+	}
+	.step-4 .step-row{
+		width:90%;
+	}
+	.nav-buttons{
+		padding-top:15px;
+	}
+	.step-4 .appointment-label label{
+		margin-top:20px;
+	}
+	.step-3 .appointment-label label.time{
+		margin-top:20px;
+	}
+	.step{
+		height:685px;
+		width: 100%;
+	}
+	.step-1 .step-row{
+		width:100%;
+	}
+	input[name="zipcode"], .btn.get-started{
+		width:100%;
+	}
+	.step-1 .left, .step-1 .right{
+		width:100%;
+	}
+	.zipcode-right, .zipcode-left, .error.zipcode{
+		width:60%;
+		margin-left:auto;
+		margin-right:auto;
+	}
+	.zipcode-right{
+		margin-top: 20px;
+	}
+	.step-1 .container{
+		padding-top: 160px;
+	}
+	.step-2 .container{
+		padding-top: 70px;
+	}
+	.step-3 .container {
+		padding-top: 70px;
+	}
+	.step-4 .container {
+		padding-top: 15px;
+	}
+	.step-2 .nav-buttons{
+		margin-top:35px;
+	}
+	.step-3 .nav-buttons{
+		margin-top:35px;
+	}
+	.step-4 .nav-buttons{
+		margin-top:40px;
+		clear: both;
+	}
+	#times{
+		min-height: 136px;
+		clear: both;
+	}
+	.selected-location{
+		display: none;
+	}
+	.appointment-clear{
+		display: block;
+	}
+
+
+}
+
+/* Small Devices, Tablets */
+@media only screen and (max-width : 620px){
+	.location{
+		margin-left:auto;
+		margin-right:auto;
+		width:70%;
+		float: none;
+	}
+	.location label, .location .address{
+		 font-size: 14px;
+	 }
+	.step-4 .form-group{
+		width: 100%;
+		float: none;
+		margin-bottom:0px;
+	}
+	.step-4 .input-group{
+		width:100%;
+		margin-bottom:20px;
+	}
+	#consumer-contact-information .left, #consumer-contact-information .right{
+		width: 100%;
+		clear: both;
+	}
+	.zipcode-right, .zipcode-left, .error.zipcode{
+		width:80%;
+	}
+	.right .form-group:nth-child(odd) .input-group{
+		float: none;
+	}
+}
+
+/* Extra Small Devices, Phones */
+@media only screen and (max-width : 480px){
+	.location{
+		margin-left:auto;
+		margin-right:auto;
+		width:90%;
+		float: none;
+	}
+	.zipcode-right, .zipcode-left, .error.zipcode{
+		width:100%;
+	}
+}
+
+/* Custom, iPhone Retina */
+@media only screen and (max-width : 320px){
+
 }

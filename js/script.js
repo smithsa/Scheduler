@@ -18,92 +18,84 @@ var days_of_week = Object.keys(day_of_week_codes);
 
 //event handlers
 $( document ).ready(function() {
-    $("#scheduler-form").easyWizard({showSteps: false, showButtons:false});
-    $("input[name='phone']").mask("(999) 999-9999");
+    $('#scheduler-form').bootstrapWizard({
+            nextSelector:".next",
+            previousSelector: ".prev",
+            onNext: function(tab, navigation, index) {
+                $(".error").css('visibility', 'hidden');
+                var current_step = index;
+                console.log(current_step);
+                if(current_step == 1){
+                    var zipcode = $("input[name='zipcode']").val();
+                    if(!isZipcodeValid(zipcode)){
+                        $(".error.zipcode").text("Please enter a valid zip code.").css('visibility', 'visible');
+                        return false;
+                    }
+                    $(".location-title").text("Available Near "+zipcode);
+                    populateNearestLocations(zipcode);
+                    $(".prev.btn").show();
 
-    $(".next.btn").click(function(){
-         $(".error").hide();
-         var current_step = $(".step.active").attr("data-step");
-         var next_step =  parseInt(current_step) + 1;
-         if(current_step == 1){
-             var zipcode = $("input[name='zipcode']").val();
-             if(!isZipcodeValid(zipcode)){
-                 $(".error.zipcode").show();
-                 return false;
-             }
-             $(".location-title").text("Available Near "+zipcode);
-             populateNearestLocations(zipcode);
-             $(".prev.btn").show();
-
-         }
-         if(current_step == 2){
-            if(!$("input[name='location']:checked").val()){
-              $(".error.locations").show();
-              return false;
+                }
+                if(current_step == 2){
+                    if(!$("input[name='location']:checked").val()){
+                        $(".error.locations").css('visibility', 'visible');
+                        return false;
+                    }
+                    var location_id = $("input[name='location']:checked").attr("id");
+                    var location = $('label[for='+location_id+']').html();
+                    $(".selected-location").text(location.replace('<br><span class="address">', ' -').replace('</span>', '').replace("&amp;", '&'));
+                }
+                if(current_step == 3){
+                    if(!$("input[name='date']:checked").val()){
+                        $(".error.appointment").text("Please select a date.").css('visibility', 'visible');
+                        return false;
+                    }
+                    if(!$("input[name='time']:checked").val()){
+                        $(".error.appointment").text("Please select a time.").css('visibility', 'visible');
+                        return false;
+                    }
+                    $(".submit.btn").show();
+                }
+            },
+            onPrevious: function(tab, navigation, index) {
+                var current_step = index - 1;
+                if(current_step == 2){
+                    $(".prev.btn").hide();
+                }
+                if(current_step == 4){
+                    $(".submit.btn").hide();
+                    $(".next.btn").show();
+                }
             }
-            var location_id = $("input[name='location']:checked").attr("id");
-            var location = $('label[for='+location_id+']').html();
-            $(".selected-location").text(location.replace('<br><span class="address">', '-').replace('</span>', '').replace("&amp;", '&'));
-         }
-         if(current_step == 3){
-           if(!$("input[name='date']:checked").val()){
-              $(".error.dates").show();
-              return false;
-           }
-           if(!$("input[name='time']:checked").val()){
-              $(".error.times").show();
-              return false;
-           }
-            $(".submit.btn").show();
-            $(".next.btn").hide();
-         }
+        });
 
-
-         $('#scheduler-form').easyWizard('nextStep');
-
-
-    });
-
-    $(".prev.btn").click(function(){
-      var current_step = $(".step.active").attr("data-step");
-      var prev_step =  parseInt(current_step) - 1;
-      $('#scheduler-form').easyWizard('prevStep');
-
-       if(current_step == 2){
-          $(".prev.btn").hide();
-       }
-       if(current_step == 4){
-          $(".submit.btn").hide();
-          $(".next.btn").show();
-       }
-    });
+    $("input[name='phone']").mask("(999) 999-9999");
+    $('input, textarea').placeholder();
 
     $(".submit.btn").click(function(){
-        $(".error").hide();
+        $(".error").css('visibility', 'hidden');
         var is_valid = true;
-        if(!$("input[name='full-name']").val()){
-          $(".error.full-name").show();
-            is_valid = false;
+        if(!$("input[name='first-name']").val()){
+          $(".error.contact-information").text("Please enter first name.").css('visibility', 'visible');
+            return false;
+        }
+        if(!$("input[name='last-name']").val()){
+          $(".error.contact-information").text("Please enter last name.").css('visibility', 'visible');
+            return false;
         }
         if(!$("input[name='email']").val() || !isEmailValidate($("input[name='email']").val())){
-          $(".error.email").show();
-            is_valid = false;
+          $(".error.contact-information").text("Please enter a valid email.").css('visibility', 'visible');
+            return false;
         }
         if(!$("input[name='phone']").val() || $("input[name='phone']").val().length != 14){
-          $(".error.phone").show();
-            is_valid =  false;
-        }
-        if(!is_valid){
+          $(".error.contact-information").text("Please enter a valid phone number.").css('visibility', 'visible');
             return false;
         }
 
         submitForm();
     });
 
-    
 
-    //for this event handler, for every click I am making an ajax call to the server, this needs to change
-    //event handler for the location
     $("#locations").on("click", "input[name='location']", function(){
         $("#dates, #times").empty();
          var location_id = $(this).val();
@@ -144,7 +136,6 @@ $( document ).ready(function() {
          });
     });
 
-    //event handler for the date
     $("#dates").on("click", "input[name='date']", function(){
       $("#times").empty();
       var day_code = parseInt($(this).val());
@@ -267,14 +258,19 @@ function addBusinessDays(date, days){
 
 function submitForm(){
     var location_id = $("input[name='location']:checked").attr("id");
-    var location = $('label[for='+location_id+']').text();
+    var location = $('label[for="' + location_id + '"]').html().split('<br>')[0].replace("&amp;", '&');
+    var address = $('label[for="'+ location_id +'"] .address').text().slice(1);
     var date_id = $("input[name='date']:checked").attr("id");
     var date = $('label[for='+date_id+']').text();
     var selected_time_element = $("input[name='time']:checked");
     var time = selected_time_element.val();
-    var consumer_full_name = $("input[name='full-name']").val();
+    var consumer_first_name = $("input[name='first-name']").val();
+    var consumer_last_name = $("input[name='last-name']").val();
+    var consumer_full_name = consumer_first_name + ' ' + consumer_last_name;
     var consumer_email = $("input[name='email']").val();
     var consumer_phone = $("input[name='phone']").val();
+    var prefered_language = $("select[name='preferred-language']").val();
+    var time_contact = $("select[name='time-for-contact']").val();
     //to get the point of contact:
     // 1. location id is needed = location_id;
     var location_data_id = $("input[name='location']:checked").val();
@@ -287,11 +283,14 @@ function submitForm(){
     var appointment_end_time = selected_time_element_id_list[2];
 
     console.log(location);
+    console.log(address);
     console.log(date);
     console.log(time);
     console.log(consumer_full_name);
     console.log(consumer_email);
     console.log(consumer_phone);
+    console.log(prefered_language);
+    console.log(time_contact);
     console.log('location id:', location_data_id);
     console.log('day of week id:', date_day_of_week);
     console.log('start time:', appointment_start_time);

@@ -4,6 +4,8 @@
 	<meta charset=utf-8 />
 	<title></title>
 	<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="js/jquery.placeholder.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap-wizard/1.2/jquery.bootstrap.wizard.min.js"></script>
 	<!-- Bootstrap CDN Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 	<!-- Bootstrap CDN Optional theme -->
@@ -13,7 +15,6 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
 	<link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
 	<script type="text/javascript" src="js/jquery.maskedinput.min.js"></script>
-	<script src="js/jquery.easyWizard.js"></script>
 	<script type="text/javascript" src="js/script.js"></script>
 	<!--[if IE]>
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -21,107 +22,165 @@
 </head>
 <body>
 <form id="scheduler-form">
-	<div class="step step-1">
-		<div class="container">
-			<div class="row step-row">
-				<div class="error zipcode" style="display:none">Please enter a valid zip code. This field is required.</div>
-				<div class="col-sm-8">
-					<div class="zipcode-left">
-						<h1>Find help near you.</h1>
-						<p>Need help with your health insurance application? Schedule an appointment with a certified Navigator today.</p>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<div class="zipcode-right">
-						<input type="text" name="zipcode" maxlength="5" placeholder="Enter Your Zip Code" class="form-control">
-						<button class="next btn get-started" type="button">Get Started</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="step step-2">
-		<div class="container">
-			<div class="row step-row">
-				<h3 class="location-title"></h3>
-				<div class="error locations" style="display:none">Please select a location. This field is required.</div>
-				<div id="locations"></div>
-				<button class="next btn" type="button">Next</button>
-			</div>
-		</div>
-	</div>
-	<div class="step step-3">
-		<div class="container">
-			<div class="row step-row">
-				<h3 class="location-title"></h3>
-				<p class="selected-location"></p>
-				<div class="error dates" style="display:none">Please select a date. This field is required.</div>
-				<div id="dates"></div>
-				<label class="control-label">Time <span class="req">*</span></label>
-				<div class="error times" style="display:none">Please select a time. This field is required.</div>
-				<div id="times"></div>
-			</div>
-		</div>
-	</div>
-	<div class="step step-4">
-		<div class="container">
-			<div class="row step-row">
-				<div id="consumer-contact-information">
-					<!-- Full name -->
-					<div class="form-group">
-					  <label class="control-label">Full Name <span class="req">*</span></label>
-					  <div class="error full-name" style="display:none">Please enter your name. This field is required.</div>
-						  <div class="input-group">
-								<input  name="full-name" placeholder="Your Full Name" class="form-control"  type="text">
-						   </div>
-					</div>
-
-					<!-- Email -->
-					<div class="form-group">
-					  <label class="control-label">Email <span class="req">*</span></label>
-					  <div class="error email" style="display:none">Please enter a valid email. This field is required.</div>
-						  <div class="input-group">
-								<input  name="email" placeholder="Your Email" class="form-control"  type="email">
-						   </div>
-					</div>
-
-					<!-- Phone Number -->
-					<div class="form-group">
-					  <label class="control-label">Phone Number <span class="req">*</span></label>
-					  <div class="error phone" style="display:none">Please enter a valid phone number. This field is required.</div>
-						  <div class="input-group">
-								<input  name="phone" placeholder="Your Phone Number" class="form-control"  type="tel">
-						  </div>
-					</div>
-
-					<!-- Preferred Language -->
-					<div class="form-group">
-						<label class="control-label">Phone Number <span class="req">*</span></label>
-						<div class="error phone" style="display:none">Please enter a valid phone number. This field is required.</div>
-						<div class="input-group">
-							<input  name="phone" placeholder="Your Phone Number" class="form-control"  type="tel">
+	<ul style="display:none">
+		<li><a href="#tab1" data-toggle="tab"></a></li>
+		<li><a href="#tab2" data-toggle="tab"></a></li>
+		<li><a href="#tab3" data-toggle="tab"></a></li>
+		<li><a href="#tab4" data-toggle="tab"></a></li>
+	</ul>
+	<div class="tab-content">
+		<div class="step step-1 tab-pane fade in active" id="tab1">
+			<div class="container">
+				<div class="row step-row">
+					<div class="error zipcode" style="visibility: hidden"></div>
+					<div class="col-sm-8 left">
+						<div class="zipcode-left">
+							<h1>Find help near you.</h1>
+							<p>Need help with your health insurance application? Schedule an appointment with a certified Navigator today.</p>
 						</div>
 					</div>
-
-					<!-- Best Time To Contact -->
-					<div class="form-group">
-						<label class="control-label">Phone Number <span class="req">*</span></label>
-						<div class="error phone" style="display:none">Please enter a valid phone number. This field is required.</div>
-						<div class="input-group">
-							<input  name="phone" placeholder="Your Phone Number" class="form-control"  type="tel" >
+					<div class="col-sm-4 right">
+						<div class="zipcode-right">
+							<input type="text" name="zipcode" maxlength="5" placeholder="Enter Your Zip Code" class="form-control">
+							<button class="next btn get-started" type="button">Get Started</button>
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+		<div class="step step-2 tab-pane fade in" id="tab2">
+			<div class="container">
+				<div class="row step-row">
+					<div class="step-header">
+						<h3 class="location-title"></h3>
+					</div>
+					<div class="error locations" style="visibility: hidden">Please select a location.</div>
+					<div id="locations"></div>
+					<div class="nav-buttons">
+						<button class="next btn" type="button">Next</button>
+						<button class="prev btn" type="button">Back</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="step step-3 tab-pane fade in" id="tab3">
+			<div class="container">
+				<div class="row step-row">
+					<div class="step-header">
+						<h3 class="location-title"></h3>
+						<p class="selected-location"></p>
+					</div>
+					<div class="error dates appointment" style="visibility: hidden"></div>
+					<div style="clear: both"></div>
+					<div class="dates-container">
+						<div class="appointment-label">
+							<label class="control-label date">Select a Date</label>
+						</div>
+						<div id="dates"></div>
+					</div>
+					<div class="times-container">
+						<div class="appointment-label">
+							<label class="control-label time">Select a Time Slot</label>
+						</div>
+						<div id="times"></div>
+					</div>
+					<div style="clear: both"></div>
+					<div class="nav-buttons">
+						<button class="next btn" type="button">Next</button>
+						<button class="prev btn" type="button">Back</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="step step-4 tab-pane fade in" id="tab4">
+			<div class="container">
+				<div class="row step-row">
+					<div id="consumer-contact-information">
+						<div class="step-header">
+							<h3 class="location-title"></h3>
+							<p class="selected-location"></p>
+						</div>
+						<div class="error contact-information" style="visibility: hidden"></div>
 
+						<div class="left">
+
+							<!-- First name -->
+							<div class="form-group">
+								<div class="input-group">
+									<label class="control-label">First Name <span class="req">*</span></label>
+									<input  name="first-name" placeholder="Your First Name" class="form-control"  type="text">
+								</div>
+							</div>
+
+							<!-- Last name -->
+							<div class="form-group">
+								<div class="input-group" style="float:right">
+									<label class="control-label">Last Name <span class="req">*</span></label>
+									<input  name="last-name" placeholder="Your Last Name" class="form-control"  type="text">
+								</div>
+							</div>
+
+							<!-- Email -->
+							<div class="form-group">
+								<div class="input-group">
+									<label class="control-label">Email <span class="req">*</span></label>
+									<input  name="email" placeholder="Your Email" class="form-control"  type="email">
+								</div>
+							</div>
+
+
+						</div>
+						<div class="right">
+
+							<!-- Phone Number -->
+							<div class="form-group">
+								<div class="input-group">
+									<label class="control-label">Phone Number <span class="req">*</span></label>
+									<input  name="phone" placeholder="Your Phone Number" class="form-control"  type="tel">
+								</div>
+							</div>
+
+
+							<!-- Preferred Language -->
+							<div class="form-group">
+								<div class="input-group">
+									<label class="control-label">Preferred Language</label>
+									<select class="form-control" name="preferred-language">
+										<option value="">Select Language</option>
+										<option value="Spanish">English</option>
+										<option value="Spanish">Spanish</option>
+										<option value="French">Mandarin</option>
+										<option value="French">Polish</option>
+									</select>
+								</div>
+							</div>
+
+
+							<!-- Best Time To Contact -->
+							<div class="form-group">
+								<div class="input-group">
+									<label class="control-label">Best Time For Contact</label>
+									<select class="form-control" name="time-for-contact">
+										<option value="">Select Time</option>
+										<option value="Morning">Morning</option>
+										<option value="Afternoon">Afternoon</option>
+										<option value="Evening">Evening</option>
+									</select>
+								</div>
+							</div>
+
+						</div>
+
+						<div class="nav-buttons">
+							<button type="button" class="submit btn">Submit</button>
+							<button class="prev btn" type="button">Back</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </form>
-<div class="wizard-buttons">
-	<button class="prev btn" style="display:none">Previous</button>
-	<button class="next btn">Next</button>
-	<button type="submit" class="submit btn btn-info" style="display: none;">Submit</button>
-</div>
 
 </body>
 </html>

@@ -5,7 +5,7 @@
          "name":"Presence Resurrection Medical Center",
          "street_address":"7435 W Talcott Ave",
          "city":"Chicago",
-         "state":"Illinois",
+         "state":"IL",
          "zip_code":"60631",
          "phone":"(773) 774-8000",
          "appointment_slots":{
@@ -62,7 +62,7 @@
          "name":"Presence Holy Family Medical Center",
          "street_address":"100 N River Rd",
          "city":"Des Plaines",
-         "state":"Illinois",
+         "state":"IL",
          "zip_code":"60016",
          "phone":"(847) 297-1800",
          "appointment_slots":{
@@ -103,7 +103,7 @@
          "name":"Presence St Mary & Elizabeth ",
          "street_address":"2233 W Division St",
          "city":"Chicago",
-         "state":"Illinois",
+         "state":"IL",
          "zip_code":"60622",
          "phone":"(312) 770-2000",
          "appointment_slots":{
@@ -165,7 +165,7 @@
          "name":"Presence St. Joseph Hospital",
          "street_address":"2900 N Lake Shore Drive",
          "city":"Chicago",
-         "state":"Illinois",
+         "state":"IL",
          "zip_code":"60657",
          "phone":"(773) 665-3000",
          "appointment_slots":{
@@ -198,7 +198,7 @@
          "name":"Presence St. Joseph Hospital",
          "street_address":"333 Madison St",
          "city":"Joliet",
-         "state":"Illinois",
+         "state":"IL",
          "zip_code":"60435",
          "phone":"(815) 725-7133",
          "appointment_slots":{
@@ -227,7 +227,7 @@
          "name":"Presence St. Mary's Hospital",
          "street_address":"500 W Court St",
          "city":"Kankakee",
-         "state":"Illinois",
+         "state":"IL",
          "zip_code":"60901",
          "phone":"(815) 937-2400",
          "appointment_slots":{
@@ -256,7 +256,7 @@
          "name":"Presence St. Mary's Hospital",
          "street_address":"500 W Court St",
          "city":"Kankakee",
-         "state":"Illinois",
+         "state":"IL",
          "zip_code":"60901",
          "phone":"(815) 937-2400",
          "appointment_slots":{
@@ -285,7 +285,7 @@
          "name":"Presence Immediate Care",
          "street_address":"410 E Lincoln Hwy",
          "city":"New Lenox",
-         "state":"Illinois",
+         "state":"IL",
          "zip_code":"60451",
          "phone":"(815) 462-5566",
          "appointment_slots":{
