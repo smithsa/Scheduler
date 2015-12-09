@@ -9,7 +9,7 @@ body{
 	height:420px;
 }
 .step-1 .container{
-	padding-top:118px;
+	padding-top:100px;
 }
 .step-1{
 	background: #20A4DD;
@@ -32,14 +32,26 @@ body{
 .step-2 button{
 	margin-top:15px;
 }
-.step-2 .container, .step-3 .container{
-	padding-top:50px;
+.step-2 .nav-buttons{
+	padding-top: 30px;
+	clear:both;
+}
+.step-3 .nav-buttons{
+	padding-top: 30px;
+	clear:both;
+}
+.step-4 .nav-buttons{
+	padding-top: 0px;
+	clear:both;
+}
+.step-2 .container{
+	padding-top:30px;
+}
+.step-3 .container{
+	padding-top:20px;
 }
 .step-4 .container{
-	padding-top:10px;
-}
-#locations{
-	margin-top:15px;
+	padding-top:8px;
 }
 .req{
 	color:red;
