@@ -24,7 +24,6 @@ $( document ).ready(function() {
             onNext: function(tab, navigation, index) {
                 $(".error").css('visibility', 'hidden');
                 var current_step = index;
-                console.log(current_step);
                 if(current_step == 1){
                     var zipcode = $("input[name='zipcode']").val();
                     if(!isZipcodeValid(zipcode)){
@@ -91,7 +90,7 @@ $( document ).ready(function() {
           $(".error.contact-information").text("Please enter a valid phone number.").css('visibility', 'visible');
             return false;
         }
-
+        $('#scheduler-form').bootstrapWizard('show', 4);
         submitForm();
     });
 
@@ -269,32 +268,15 @@ function submitForm(){
     var consumer_full_name = consumer_first_name + ' ' + consumer_last_name;
     var consumer_email = $("input[name='email']").val();
     var consumer_phone = $("input[name='phone']").val();
-    var prefered_language = $("select[name='preferred-language']").val();
+    var preferred_language = $("select[name='preferred-language']").val();
     var time_contact = $("select[name='time-for-contact']").val();
     //to get the point of contact:
-    // 1. location id is needed = location_id;
     var location_data_id = $("input[name='location']:checked").val();
-    // 2. day of week
     var date_day_of_week = $("input[name='date']:checked").val();
-    // 3. time slot
     //start_time and end_time
     var selected_time_element_id_list = selected_time_element.attr("id").split('-');
     var appointment_start_time = selected_time_element_id_list[1];
     var appointment_end_time = selected_time_element_id_list[2];
-
-    console.log(location);
-    console.log(address);
-    console.log(date);
-    console.log(time);
-    console.log(consumer_full_name);
-    console.log(consumer_email);
-    console.log(consumer_phone);
-    console.log(prefered_language);
-    console.log(time_contact);
-    console.log('location id:', location_data_id);
-    console.log('day of week id:', date_day_of_week);
-    console.log('start time:', appointment_start_time);
-    console.log('end time:', appointment_end_time);
 
     //getting the point of contact's email. will send email here.
     $.getJSON( "json/location.json", function( data ) {
@@ -316,7 +298,33 @@ function submitForm(){
 
         $.getJSON( "json/point_of_contact.json", function( data ) {
                 var point_of_contact = data["point_of_contacts"][point_of_contact_id];
-                console.log("poc:", point_of_contact["email"]);
+                var appointment_email_data = {
+                    "to_email": consumer_email,
+                    "to_name": consumer_full_name,
+                    "appointment_date": date,
+                    "appointment_time": time,
+                    "appointment_location": location,
+                    "appointment_address": address,
+                    "appointment_poc_name": point_of_contact["first_name"] + ' ' + point_of_contact["last_name"],
+                    "appointment_poc_email": point_of_contact["email"]
+
+
+                }
+                var navigator_email_data = {
+                    "to_email": point_of_contact["email"],
+                    "to_name": point_of_contact["first_name"] + ' ' + point_of_contact["last_name"],
+                    "consumer_name": consumer_full_name,
+                    "consumer_email": consumer_email,
+                    "consumer_phone": consumer_phone,
+                    "consumer_language": preferred_language,
+                    "consumer_best_contact_time": time_contact,
+                    "appointment_time": time,
+                    "appointment_date": date,
+                    "appointment_location": location,
+                    "appointment_address": address,
+                }
+                sendConsumerEmail(appointment_email_data);
+                sendNavigatorEmail(navigator_email_data);
         });
 
     });
@@ -375,25 +383,133 @@ function sortMultiDimensionalArray(a, b) {
         return (a[0] < b[0]) ? -1 : 1;
     }
 }
-//function to send email
-function sendMail(){
-  $.ajax({
-    type: "POST",
-    url: "https://mandrillapp.com/api/1.0/messages/send.json",
-    data: {
-      'key': 'YOUR_KEY',
-      'message': {
-        'from_email': 'YOUR_SENDER@example.com',
-        'to': [
-          {
-            'email': 'YOUR_RECEIVER@example.com',
-            'name': 'YOUR_RECEIVER_NAME',
-            'type': 'to'
-          }
+
+function sendNavigatorEmail(data){
+    var params = {
+        "key": "0LcbsIutlKO5QcqjGKl5tA",
+        "template_name": "Scheduler Request: Navigator",
+        "template_content": [
+            {
+                "name": "appointment_date",
+                "content": data['appointment_date']
+            },
+            {
+                "name": "appointment_time",
+                "content": data['appointment_time']
+            },
+            {
+                "name": "appointment_location",
+                "content": data['appointment_location']
+            },
+            {
+                "name": "navigator_name",
+                "content": data['to_name']
+            },
+            {
+                "name": "consumer_name",
+                "content": data['consumer_name']
+            },
+            {
+                "name": "consumer_phone",
+                "content": data['consumer_phone']
+            },
+            {
+                "name": "consumer_email",
+                "content": data['consumer_email']
+            },
+            {
+                "name": "consumer_language",
+                "content": data['consumer_language']
+            },
+            {
+                "name": "consumer_best_contact_time",
+                "content": data['consumer_best_contact_time']
+            }
         ],
-        'subject': 'title',
-        'html': 'html can be used'
-      }
-    }
-  });
+        "message": {
+            "subject": "Request For Meeting: Presence Health",
+            "from_email": "admin@patientinnovationcenter.org",
+            "from_name": "Patient Innovation Center",
+            "to": [
+                {
+                    "email": data['to_email'],
+                    "name": data['to_name'],
+                    "type": "to"
+                }
+            ],
+            "headers": {
+                "Reply-To": " no-reply@patientinnovationcenter.org"
+            }
+        }
+    };
+
+    $.ajax({
+        type: "Post",
+        url: "https://mandrillapp.com/api/1.0/messages/send-template.json",
+        data: params
+    }).done(function(response) {
+        console.log(response); // if you're into that sorta thing
+    });
+
+}
+
+function sendConsumerEmail(data){
+    var params = {
+        "key": "0LcbsIutlKO5QcqjGKl5tA",
+        "template_name": "Scheduler Request: Consumer",
+        "template_content": [
+            {
+                "name": "consumer_name",
+                "content": data['to_name']
+            },
+            {
+                "name": "appointment_date",
+                "content": data['appointment_date']
+            },
+            {
+                "name": "appointment_time",
+                "content": data['appointment_time']
+            },
+            {
+                "name": "appointment_location",
+                "content": data['appointment_location']
+            },
+            {
+                "name": "appointment_address",
+                "content": data['appointment_address']
+            },
+            {
+                "name": "appointment_poc_name",
+                "content": data['appointment_poc_name']
+            },
+            {
+                "name": "appointment_poc_email",
+                "content": data['appointment_poc_email']
+            }
+        ],
+        "message": {
+            "subject": "Navigator Request Confirmation",
+            "from_email": "admin@patientinnovationcenter.org",
+            "from_name": "Patient Innovation Center",
+            "to": [
+                {
+                    "email": data['to_email'],
+                    "name": data['to_name'],
+                    "type": "to"
+                }
+            ],
+            "headers": {
+                "Reply-To": " no-reply@patientinnovationcenter.org"
+            }
+        }
+    };
+
+    $.ajax({
+        type: "Post",
+        url: "https://mandrillapp.com/api/1.0/messages/send-template.json",
+        data: params
+    }).done(function(response) {
+        console.log(response); // if you're into that sorta thing
+    });
+
 }

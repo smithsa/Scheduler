@@ -14,6 +14,17 @@ body{
 .step-1{
 	background: #20A4DD;
 }
+.step-5{
+	background: #20A4DD;
+	text-align: center;
+}
+.step-5 h1{
+	color: #ffffff;
+	padding-top: 161px;
+	margin-left:auto;
+	margin-right:auto;
+	font-weight:bold;
+}
 .step-1 p{
 	font-size:21px;
 	font-weight:300;
