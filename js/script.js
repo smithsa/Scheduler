@@ -260,9 +260,32 @@ function submitForm(){
     var location = $('label[for="' + location_id + '"]').html().split('<br>')[0].replace("&amp;", '&');
     var address = $('label[for="'+ location_id +'"] .address').text().slice(1);
     var date_id = $("input[name='date']:checked").attr("id");
+    var dateOb = new Date(parseInt(date_id.replace('date-', '')));
+    console.log(dateOb);
+    console.log(parseInt(date_id.replace('date-', '')));
     var date = $('label[for='+date_id+']').text();
     var selected_time_element = $("input[name='time']:checked");
     var time = selected_time_element.val();
+    var time_list = selected_time_element.attr('id').split('-');
+
+    var start_time_numeric = time_list[1];
+    var end_time_numeric = time_list[2];
+
+    var start_time_hour = 0;
+    var start_time_minute = parseInt(start_time_numeric.slice(-2));
+    if(start_time_numeric.length > 3){
+      start_time_hour = parseInt(start_time_numeric.substring(0, 2));
+    }else{
+      start_time_hour = parseInt(start_time_numeric.substring(0, 1));
+    }
+    var end_time_hour = 0;
+    var end_time_minute = parseInt(end_time_numeric.slice(-2));
+    if(end_time_numeric.length > 3){
+      end_time_hour = parseInt(end_time_numeric.substring(0, 2));;
+    }else{
+      end_time_hour = parseInt(end_time_numeric.substring(0, 1));;
+    }
+   
     var consumer_first_name = $("input[name='first-name']").val();
     var consumer_last_name = $("input[name='last-name']").val();
     var consumer_full_name = consumer_first_name + ' ' + consumer_last_name;
@@ -281,7 +304,8 @@ function submitForm(){
     //getting the point of contact's email. will send email here.
     $.getJSON( "json/location.json", function( data ) {
         //getting the point of contact
-        var time_slots = data["locations"][location_data_id]["appointment_slots"][days_of_week[date_day_of_week]]["time_slots"];
+        var selected_location = data["locations"][location_data_id];
+        var time_slots = selected_location["appointment_slots"][days_of_week[date_day_of_week]]["time_slots"];
         var points_of_contacts = [];
         for(var i = 0; i < time_slots.length; i++){
             if(appointment_start_time >= time_slots[i]["start_time"] && appointment_end_time <= time_slots[i]["end_time"]){
@@ -309,7 +333,7 @@ function submitForm(){
                     "appointment_poc_email": point_of_contact["email"]
 
 
-                }
+                };
                 var navigator_email_data = {
                     "to_email": point_of_contact["email"],
                     "to_name": point_of_contact["first_name"] + ' ' + point_of_contact["last_name"],
@@ -322,9 +346,36 @@ function submitForm(){
                     "appointment_date": date,
                     "appointment_location": location,
                     "appointment_address": address,
-                }
+                };
+
+                var pic_json_data = {
+                    "First Name": consumer_first_name,
+                    "Last Name": consumer_last_name,
+                    "Email": consumer_email,
+                    "Phone Number": consumer_phone.replace(/\D/g,''),
+                    "Preferred Language": preferred_language,
+                    "Best Contact Time": time_contact,
+                    "Appointment Information": {"Name": selected_location['name'],
+                                                "Street Address": selected_location['street_address'],
+                                                "City": selected_location['city'],
+                                                "State": selected_location['state'],
+                                                "Zip Code": selected_location['zip_code'],
+                                                "Phone Number": selected_location['phone'].replace(/\D/g,''),
+                                                "Appointment Slot": {"Date": {"Month": dateOb.getUTCDate(),
+                                                                              "Day": dateOb.getUTCMonth() + 1,
+                                                                              "Year": dateOb.getUTCFullYear()},
+                                                                     "Start Time": {"Hour": start_time_hour, "Minutes": start_time_minute},
+                                                                     "End Time": {"Hour": end_time_hour, "Minutes": end_time_minute}},
+                                                "Point of Contact": {"First Name": point_of_contact["first_name"],
+                                                                      "Last Name": point_of_contact["last_name"],
+                                                                     "Email": point_of_contact["email"],
+                                                                     "Type": point_of_contact["type"]}
+                                                }
+                };
+
                 sendConsumerEmail(appointment_email_data);
                 sendNavigatorEmail(navigator_email_data);
+                log_pic_data(pic_json_data);
         });
 
     });
@@ -382,6 +433,17 @@ function sortMultiDimensionalArray(a, b) {
     else {
         return (a[0] < b[0]) ? -1 : 1;
     }
+}
+
+function log_pic_data(data){
+    console.log(data);
+    // $.ajax({
+    //     type: "POST",
+    //     url: "",
+    //     data: data,
+    //     success: success,
+    //     dataType: dataType
+    // });
 }
 
 function sendNavigatorEmail(data){
