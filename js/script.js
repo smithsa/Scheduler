@@ -15,6 +15,7 @@ var day_of_week_codes = {
 }
 
 var days_of_week = Object.keys(day_of_week_codes);
+var months_of_year = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.' ];
 
 //event handlers
 $( document ).ready(function() {
@@ -30,7 +31,7 @@ $( document ).ready(function() {
                         $(".error.zipcode").text("Please enter a valid zip code.").css('visibility', 'visible');
                         return false;
                     }
-                    $(".location-title").text("Available Near "+zipcode);
+                    $(".location-title").text("Available Near " + zipcode);
                     populateNearestLocations(zipcode);
                     $(".prev.btn").show();
 
@@ -107,26 +108,18 @@ $( document ).ready(function() {
 
             var start_date = new Date();
             start_date = addBusinessDays(start_date, buffer_start_days);
-
             var appointment_days_of_week = [];
             for(var key in data){
               appointment_days_of_week.push(day_of_week_codes[key]);
             }
 
             var appointment_dates = getAppointmentDates(start_date, max_days, appointment_days_of_week);
-            var date_options = {
-                weekday: "long", 
-                year: "numeric", 
-                month: "short",
-                day: "numeric",
-            }
 
             for (var i = 0; i < appointment_dates.length; i++){
               var day_id = appointment_dates[i].getDay();
               var numeric_date = Number(appointment_dates[i]);
               var input_id = "date-"+numeric_date;
-              var list_date = appointment_dates[i].toLocaleTimeString("en-us", date_options).split(",");
-              var input_label = list_date[0] + ", " + list_date[1] + ", " + list_date[2];
+              var input_label = days_of_week[appointment_dates[i].getDay()] + ", " + months_of_year[appointment_dates[i].getUTCMonth()] + " " + appointment_dates[i].getUTCDate()  + ", " + appointment_dates[i].getUTCFullYear();
               var input_element   = $("<input>").attr({ type: "radio", id: input_id, name: "date", value:day_id})[0];
               var label_element   = $("<label>").attr({ for: input_id}).text(input_label)[0];
               var div_element     = $("<div>").attr({ class: "date"}).append(input_element, label_element);
@@ -261,8 +254,6 @@ function submitForm(){
     var address = $('label[for="'+ location_id +'"] .address').text().slice(1);
     var date_id = $("input[name='date']:checked").attr("id");
     var dateOb = new Date(parseInt(date_id.replace('date-', '')));
-    console.log(dateOb);
-    console.log(parseInt(date_id.replace('date-', '')));
     var date = $('label[for='+date_id+']').text();
     var selected_time_element = $("input[name='time']:checked");
     var time = selected_time_element.val();
@@ -355,14 +346,14 @@ function submitForm(){
                     "Phone Number": consumer_phone.replace(/\D/g,''),
                     "Preferred Language": preferred_language,
                     "Best Contact Time": time_contact,
-                    "Appointment Information": {"Name": selected_location['name'],
+                    "Appointment": {"Name": selected_location['name'],
                                                 "Street Address": selected_location['street_address'],
                                                 "City": selected_location['city'],
                                                 "State": selected_location['state'],
                                                 "Zip Code": selected_location['zip_code'],
                                                 "Phone Number": selected_location['phone'].replace(/\D/g,''),
-                                                "Appointment Slot": {"Date": {"Month": dateOb.getUTCDate(),
-                                                                              "Day": dateOb.getUTCMonth() + 1,
+                                                "Appointment Slot": {"Date": {"Day": dateOb.getUTCDate(),
+                                                                              "Month": parseInt(dateOb.getUTCMonth()) + 1,
                                                                               "Year": dateOb.getUTCFullYear()},
                                                                      "Start Time": {"Hour": start_time_hour, "Minutes": start_time_minute},
                                                                      "End Time": {"Hour": end_time_hour, "Minutes": end_time_minute}},
@@ -373,8 +364,8 @@ function submitForm(){
                                                 }
                 };
 
-                sendConsumerEmail(appointment_email_data);
-                sendNavigatorEmail(navigator_email_data);
+                // sendConsumerEmail(appointment_email_data);
+                // sendNavigatorEmail(navigator_email_data);
                 log_pic_data(pic_json_data);
         });
 
@@ -436,14 +427,14 @@ function sortMultiDimensionalArray(a, b) {
 }
 
 function log_pic_data(data){
-    console.log(data);
-    // $.ajax({
-    //     type: "POST",
-    //     url: "",
-    //     data: data,
-    //     success: success,
-    //     dataType: dataType
-    // });
+    data = JSON.stringify(data);
+    $.ajax({
+        type: "POST",
+        url: "http://obscure-harbor-6074.herokuapp.com/submitappointment/",
+        data: data,
+        crossDomain : true,
+        dataType: 'json'
+    });
 }
 
 function sendNavigatorEmail(data){
@@ -509,8 +500,6 @@ function sendNavigatorEmail(data){
         type: "Post",
         url: "https://mandrillapp.com/api/1.0/messages/send-template.json",
         data: params
-    }).done(function(response) {
-        console.log(response); // if you're into that sorta thing
     });
 
 }
@@ -570,8 +559,6 @@ function sendConsumerEmail(data){
         type: "Post",
         url: "https://mandrillapp.com/api/1.0/messages/send-template.json",
         data: params
-    }).done(function(response) {
-        console.log(response); // if you're into that sorta thing
     });
 
 }
