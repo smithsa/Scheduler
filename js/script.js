@@ -506,7 +506,7 @@ function sendNavigatorEmail(data){
 
 function sendConsumerEmail(data){
     var params = {
-        "key": "0LcbsIutlKO5QcqjGKl5tA",
+        "key": "",
         "template_name": "Scheduler Request: Consumer",
         "template_content": [
             {
