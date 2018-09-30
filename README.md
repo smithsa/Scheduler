@@ -1,7 +1,7 @@
 # Patient Innovation Center Scheduler
 A simple scheduler built for Patient Innovation partnership with Presence Health to connect healthcare navigators with people in the community (built as an iframe widget). A user fiest enters their zipcode and get the closest locations to them with the Chicagoland area. They then select location and time, and later fill out a form with their contact information. All data is sent to an API endpoint and a confirmation email as well.
 
-See [Usage Section](#usage) for Demo
+See [Usage](#usage) section for Demo
 
 ![patient innovation center scheduler](https://user-images.githubusercontent.com/1827606/46248558-56229e00-c3e0-11e8-8266-02860938d8dc.png)
 
